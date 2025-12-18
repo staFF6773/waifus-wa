@@ -1,14 +1,125 @@
-<header class="bg-white dark:bg-gray-800 shadow-md transition-all">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-    <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Waifus-Wa</h1>
-    <button 
-      id="darkModeToggle" 
-      class="p-2 rounded-full bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors" 
-      aria-label="Activar o desactivar el modo oscuro">
-      <svg id="darkModeIcon" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-800 dark:text-gray-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <!-- Ícono del sol por defecto -->
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-      </svg>
-    </button>
+<header class="bg-white dark:bg-gray-800 shadow-sm" x-data="{ open: false, uploadModalOpen: false }">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between items-center h-16">
+      <div class="flex items-center">
+        <img src="https://i.ibb.co/7X9RcZ4/d9m417i-e16b5388-47e6-4987-be5f-858ae772081f.png" 
+             alt="Logo" 
+             class="h-8 w-8 mr-2">
+        <span class="text-xl font-semibold text-gray-900 dark:text-white">Waifus-Wa</span>
+      </div>
+      
+      <nav class="hidden md:flex space-x-4 items-center">
+        <a href="/" class="text-gray-700 dark:text-gray-200 hover:text-pink-500 px-3 py-2 text-sm font-medium">Inicio</a>
+        
+        <!-- Menú desplegable de Categorías con clic -->
+        <div class="relative" x-data="{ open: false }" @click.away="open = false">
+          <button 
+            @click="open = !open"
+            class="flex items-center text-gray-700 dark:text-gray-200 hover:text-pink-500 px-3 py-2 text-sm font-medium focus:outline-none"
+          >
+            Categorías
+            <svg :class="{'rotate-180': open, 'rotate-0': !open}" class="w-4 h-4 ml-1 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+          </button>
+          <div 
+            x-show="open" 
+            x-transition:enter="transition ease-out duration-100" 
+            x-transition:enter-start="opacity-0 transform scale-95" 
+            x-transition:enter-end="opacity-100 transform scale-100" 
+            x-transition:leave="transition ease-in duration-75" 
+            x-transition:leave-start="opacity-100 transform scale-100" 
+            x-transition:leave-end="opacity-0 transform scale-95"
+            class="absolute left-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg py-1 z-10 border border-gray-200 dark:border-gray-700"
+          >
+            <a href="/category/waifu" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">Waifu</a>
+            <a href="/category/neko" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">Neko</a>
+            <a href="/category/manga" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">Manga</a>
+            <a href="/category/happy" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">Happy</a>
+            <a href="/category/dance" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">Dance</a>
+            <a href="/category/hug" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">Hug</a>
+            <a href="/category/other" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">Other</a>
+          </div>
+        </div>
+
+        <button 
+          @click="uploadModalOpen = true"
+          class="bg-pink-500 text-white hover:bg-pink-600 px-4 py-2 rounded-md text-sm font-medium transition-colors">
+          Subir Imagen
+        </button>
+      </nav>
+
+      <div class="flex items-center space-x-2">
+        <button id="darkModeToggle" class="p-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full" aria-label="Cambiar tema">
+          <svg id="darkModeIcon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+          </svg>
+        </button>
+        <button class="md:hidden p-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de carga de imágenes -->
+  <div x-show="uploadModalOpen" 
+       class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+       x-transition:enter="transition ease-out duration-300"
+       x-transition:enter-start="opacity-0"
+       x-transition:enter-end="opacity-100"
+       x-transition:leave="transition ease-in duration-200"
+       x-transition:leave-start="opacity-100"
+       x-transition:leave-end="opacity-0">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 w-full max-w-md mx-4"
+         @click.away="uploadModalOpen = false">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-lg font-semibold">Subir nueva imagen</h3>
+        <button @click="uploadModalOpen = false" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+      
+      <form action="/upload" method="POST" enctype="multipart/form-data" class="space-y-4">
+        <div>
+          <label for="waifuImage" class="block text-sm font-medium mb-1">Imagen de Waifu</label>
+          <input id="waifuImage" name="waifuImage" type="file" accept="image/*" required 
+                 class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 dark:bg-gray-700 dark:text-white">
+        </div>
+        <div>
+          <label for="category" class="block text-sm font-medium mb-1">Categoría</label>
+          <select id="category" name="category" required 
+                  class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 dark:bg-gray-700 dark:text-white">
+            <option value="waifu">Waifu</option>
+            <option value="neko">Neko</option>
+            <option value="manga">Manga</option>
+            <option value="happy">Happy</option>
+            <option value="dance">Dance</option>
+            <option value="hug">Hug</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <button type="submit" 
+                class="w-full px-4 py-2 bg-pink-500 text-white rounded-md hover:bg-pink-600 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-2">
+          Subir Imagen
+        </button>
+      </form>
+    </div>
   </div>
 </header>
+
+<!-- Añadir Alpine.js para la funcionalidad del menú desplegable -->
+<script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+<script>
+  // Inicializar el estado del modal
+  document.addEventListener('alpine:init', () => {
+    Alpine.data('header', () => ({
+      open: false,
+      uploadModalOpen: false
+    }));
+  });
+</script>

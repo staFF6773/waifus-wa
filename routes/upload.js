@@ -31,24 +31,27 @@ router.post('/', upload.single('waifuImage'), async (req, res) => {
     }
 
     // Verificar si la imagen es un GIF
-    const imageFormat = req.file.mimetype.split('/')[1]; // Obtener el formato de la imagen (jpg, png, gif, etc.)
-
-    let outputImageBuffer;
+    const isGif = req.file.mimetype === 'image/gif';
     const dateUtc = new Date().toISOString().replace(/:/g, '-');
-    let imageName = `waifu-${dateUtc}`; // Cambiado a 'let' para permitir la reasignación
-
-    if (imageFormat === 'gif') {
-      // Si la imagen es un GIF, la guardamos como GIF
-      outputImageBuffer = req.file.buffer;
-      imageName += '.gif';
-    } else {
-      // Convertir la imagen a WebP
-      outputImageBuffer = await sharp(req.file.buffer).webp().toBuffer();
-      imageName += '.webp';
-    }
-
+    const imageName = `waifu-${dateUtc}.${isGif ? 'gif' : 'jpeg'}`;
     const outputPath = path.join(categoryDir, imageName);
-    await sharp(outputImageBuffer).toFile(outputPath);
+
+    if (isGif) {
+      // Si es un GIF, guardar directamente sin procesar para mantener la animación
+      fs.writeFileSync(outputPath, req.file.buffer);
+    } else {
+      // Si no es un GIF, redimensionar y optimizar con sharp
+      await sharp(req.file.buffer)
+        .resize(800, 1200, {
+          fit: 'inside',
+          withoutEnlargement: true
+        })
+        .jpeg({
+          quality: 85,
+          progressive: true
+        })
+        .toFile(outputPath);
+    }
 
     // Crear el objeto de waifu
     const newWaifu = {

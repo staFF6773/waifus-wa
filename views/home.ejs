@@ -63,37 +63,17 @@
 
   <br>
   <!-- Apartado de anuncio -->
-  <div class="bg-yellow-500 text-black p-4 rounded-lg shadow-md mb-8">
-    <h3 class="font-semibold text-lg">¡Anuncio Especial!</h3>
-    <p class="text-sm">¡Recuerda que estamos agregando nuevas waifus a diario! Tú puedes añadir la waifu que quieras, siempre y cuando cumpla con nuestra condición: solo waifus y usando adecuadamente la categoría correspondiente. ¡Nada de contenido NSFW!</p>
+  <div class="max-w-3xl mx-auto bg-pink-500 text-white px-6 py-3 rounded-lg shadow-md mb-8">
+    <div class="flex items-center justify-center space-x-2">
+      <svg class="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+      </svg>
+      <p class="text-sm text-center">Sube imágenes apropiadas (sin contenido para adultos) y elige la categoría correcta.</p>
+    </div>
   </div>
 
 
   <main class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
-    <h2 class="text-3xl font-semibold text-center mb-8">Subir Nueva Waifu</h2>
-
-    <div class="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 mb-8">
-      <h3 class="text-xl font-semibold mb-4">Formulario de Carga</h3>
-      <form action="/upload" method="POST" enctype="multipart/form-data" class="space-y-4">
-        <div>
-          <label for="waifuImage" class="block text-sm font-medium mb-1">Imagen de Waifu</label>
-          <input id="waifuImage" name="waifuImage" type="file" accept="image/*" required class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white">
-        </div>
-        <div>
-          <label for="category" class="block text-sm font-medium mb-1">Categoría</label>
-          <select id="category" name="category" required class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white">
-            <option value="waifu">Waifu</option>
-            <option value="neko">Neko</option>
-            <option value="manga">Manga</option>
-            <option value="happy">Happy</option>
-            <option value="dance">Dance</option>
-            <option value="hug">Hug</option>
-            <option value="other">Other</option>
-          </select>
-        </div>
-        <button type="submit" class="w-full px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:ring-offset-gray-900">Subir Imagen</button>
-      </form>
-    </div>
 
     <% Object.entries(limitedCategories).forEach(([category, waifus]) => { %>
       <div class="mb-12">
@@ -112,7 +92,7 @@
           <% }) %>
         </div>
         <div class="mt-6 text-center">
-          <a href="/category/<%= category %>" class="inline-block px-6 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:ring-offset-gray-900">
+          <a href="/category/<%= category %>" class="inline-block px-6 py-2 bg-pink-500 text-white rounded-md hover:bg-pink-600 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:ring-offset-gray-900">
             Ver todas las imágenes de <%= category %>
           </a>
         </div>
@@ -124,14 +104,46 @@
   <%- include('components/footer.ejs') %>
 
   <!-- Modal -->
-  <div id="imageModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center">
-    <div class="relative bg-white dark:bg-gray-800 p-4 rounded-lg shadow-xl">
-      <button onclick="closeModal()" class="absolute top-2 right-2 text-white text-2xl">&times;</button>
-      <img id="modalImage" src="" alt="Waifu" class="max-w-full max-h-[80vh] mx-auto">
+  <div id="imageModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+    <div class="relative max-w-4xl w-full max-h-[90vh]">
+      <!-- Botón de cerrar -->
+      <button onclick="closeModal()" 
+              class="absolute -right-3 -top-3 z-10 bg-pink-500 hover:bg-pink-600 text-white rounded-full p-2 shadow-lg transform transition-transform hover:scale-110">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+      
+      <!-- Contenedor de la imagen -->
+      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-2xl overflow-hidden h-full">
+        <img id="modalImage" 
+            src="" 
+            alt="Imagen ampliada" 
+            class="w-full h-full max-h-[80vh] object-contain">
+      </div>
+      
+      <!-- Controles de navegación (opcional) -->
+      <div class="flex justify-between items-center mt-4 text-white">
+        <button id="prevBtn" class="p-2 bg-pink-500/80 hover:bg-pink-600/90 rounded-full transition-transform hover:scale-110 focus:outline-none">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+        <span id="imageCounter" class="text-white text-sm bg-black/50 px-3 py-1 rounded-full">0/0</span>
+        <button id="nextBtn" class="p-2 bg-pink-500/80 hover:bg-pink-600/90 rounded-full transition-transform hover:scale-110 focus:outline-none">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+      </div>
     </div>
   </div>
 
   <script>
+    // Variables globales para el modal
+    let currentImageIndex = 0;
+    let imageSources = [];
+    
     const darkModeToggle = document.getElementById('darkModeToggle');
     const darkModeIcon = document.getElementById('darkModeIcon');
     const html = document.documentElement;
@@ -171,18 +183,104 @@
     });
 
     // Función para abrir el modal
-    function openModal(imageSrc) {
-      const modal = document.getElementById('imageModal');
-      const modalImage = document.getElementById('modalImage');
-      modalImage.src = imageSrc;
-      modal.classList.remove('hidden');
-    }
+  // Obtener todas las imágenes de la galería
+  function getAllImageSources() {
+    const images = [];
+    document.querySelectorAll('main img').forEach(img => {
+      images.push(img.src);
+    });
+    return images;
+  }
+
+  function openModal(clickedImageSrc) {
+    // Obtener todas las imágenes y el índice de la imagen actual
+    imageSources = getAllImageSources();
+    currentImageIndex = imageSources.indexOf(clickedImageSrc);
+    
+    const modal = document.getElementById('imageModal');
+    const modalImage = document.getElementById('modalImage');
+    
+    // Aplicar transición suave
+    modalImage.style.opacity = '0';
+    setTimeout(() => {
+      modalImage.src = clickedImageSrc;
+      modalImage.onload = () => {
+        modalImage.style.opacity = '1';
+      };
+    }, 100);
+    
+    modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+  }
 
     // Función para cerrar el modal
-    function closeModal() {
+  function closeModal() {
       const modal = document.getElementById('imageModal');
       modal.classList.add('hidden');
+      document.body.style.overflow = 'auto'; // Restaura el scroll
     }
+
+    // Navegación con teclado
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeModal();
+      } else if (e.key === 'ArrowLeft') {
+        navigateImages(-1);
+      } else if (e.key === 'ArrowRight') {
+        navigateImages(1);
+      }
+    });
+
+    // Navegación entre imágenes
+    function navigateImages(direction) {
+      if (imageSources.length === 0) return;
+      
+      currentImageIndex += direction;
+      
+      // Circular navigation
+      if (currentImageIndex < 0) {
+        currentImageIndex = imageSources.length - 1;
+      } else if (currentImageIndex >= imageSources.length) {
+        currentImageIndex = 0;
+      }
+      
+      const modalImage = document.getElementById('modalImage');
+      modalImage.style.opacity = '0';
+      
+      setTimeout(() => {
+        modalImage.src = imageSources[currentImageIndex];
+        updateImageCounter();
+        modalImage.onload = () => {
+          modalImage.style.opacity = '1';
+        };
+      }, 100);
+    }
+    
+    // Actualizar el contador de imágenes
+    function updateImageCounter() {
+      const counter = document.getElementById('imageCounter');
+      if (counter) {
+        counter.textContent = `${currentImageIndex + 1}/${imageSources.length}`;
+      }
+    }
+    
+    // Inicializar eventos de los botones de navegación
+    document.addEventListener('DOMContentLoaded', () => {
+      const prevBtn = document.getElementById('prevBtn');
+      const nextBtn = document.getElementById('nextBtn');
+      
+      if (prevBtn && nextBtn) {
+        prevBtn.addEventListener('click', () => navigateImages(-1));
+        nextBtn.addEventListener('click', () => navigateImages(1));
+      }
+      
+      // Actualizar contador al abrir el modal
+      document.querySelectorAll('main img').forEach((img, index) => {
+        img.addEventListener('click', () => {
+          setTimeout(updateImageCounter, 100);
+        });
+      });
+    });
   </script>
 </body>
 </html>
